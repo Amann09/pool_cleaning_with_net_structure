@@ -1,0 +1,441 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/BrushedAluminium.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
+  position 0.13000694576828134 6.945787922346018e-06 2.9595310069316216
+  follow "rectangle arena"
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 5 4
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+  wallAppearance BrushedAluminium {
+    colorOverride 0.239216 0.219608 0.27451
+  }
+}
+Robot {
+  children [
+    Pen {
+      translation 0.13 0 0.02
+      rotation 1 0 0 1.57
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+            }
+            texture ImageTexture {
+            }
+            textureTransform TextureTransform {
+            }
+          }
+          geometry Box {
+            size 0.01 0.05 0.01
+          }
+        }
+      ]
+    }
+    Solid {
+      translation 0.33 -0.104 0.045
+      rotation 0 0 1 -0.588176
+      children [
+        DEF right_front_aluminium Shape {
+          appearance PBRAppearance {
+            baseColor 0.466667 0.462745 0.482353
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.1302 0.01 0.01
+          }
+        }
+      ]
+      name "right_front_aluminium"
+      boundingObject USE right_front_aluminium
+      physics Physics {
+      }
+    }
+    Solid {
+      translation 0.33 0.104 0.045
+      rotation 0 0 1 0.588176
+      children [
+        DEF left_front_aluminium Shape {
+          appearance PBRAppearance {
+            baseColor 0.466667 0.462745 0.482353
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.1302 0.01 0.01
+          }
+        }
+      ]
+      name "left_front_aluminium"
+      boundingObject USE left_front_aluminium
+      physics Physics {
+      }
+    }
+    Solid {
+      translation 0.202 0.1209 0.045
+      rotation 0 0 1 0.98262
+      children [
+        DEF sideleft_aluminium Shape {
+          appearance PBRAppearance {
+            baseColor 0.466667 0.462745 0.482353
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.1912 0.01
+          }
+        }
+      ]
+      name "sideleft_aluminium"
+      boundingObject USE sideleft_aluminium
+      physics Physics {
+      }
+    }
+    Solid {
+      translation 0.202 -0.1209 0.045
+      rotation 0 0 1 -0.98262
+      children [
+        DEF sideright_aluminium Shape {
+          appearance PBRAppearance {
+            baseColor 0.466667 0.462745 0.482353
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.1912 0.01
+          }
+        }
+      ]
+      name "sideright_aluminium"
+      boundingObject USE sideright_aluminium
+      physics Physics {
+      }
+    }
+    Solid {
+      translation 0.125 0 0.045
+      children [
+        DEF front_aluminium Shape {
+          appearance PBRAppearance {
+            baseColor 0.466667 0.462745 0.482353
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.35 0.01
+          }
+        }
+      ]
+      name "front_aluminium"
+      boundingObject USE front_aluminium
+      physics Physics {
+      }
+    }
+    InertialUnit {
+      translation 0 0 0.065
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+    }
+    DEF Body Pose {
+      translation 0 0 0.04
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 1
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.25 0.15 0.05
+          }
+        }
+      ]
+    }
+    DEF front_wheel_1 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 41.03698741241184
+        axis 0 1 0
+        anchor 0.075 -0.078 0.025
+      }
+      device [
+        RotationalMotor {
+          name "front_motor_1"
+        }
+      ]
+      endPoint Solid {
+        translation 0.075 -0.078 0.025
+        rotation -0.06942451646566902 0.7056814880375698 -0.7051197585904038 3.2803293384982664
+        children [
+          DEF wheel Shape {
+            appearance PBRAppearance {
+              baseColor 1 0 0
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.025
+            }
+          }
+        ]
+        name "front_wheel_1"
+        boundingObject USE wheel
+        physics DEF wheel_physics Physics {
+        }
+      }
+    }
+    DEF front_wheel_2 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 81.9159371049879
+        axis 0 1 0
+        anchor 0.075 0.078 0.025
+      }
+      device [
+        RotationalMotor {
+          name "front_motor_2"
+        }
+      ]
+      endPoint Solid {
+        translation 0.075 0.078 0.025
+        rotation -0.9863938504281836 -0.11629422663295036 0.11620165527782413 4.699486103789016
+        children [
+          DEF wheel Shape {
+            appearance PBRAppearance {
+              baseColor 1 0 0
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.025
+            }
+          }
+        ]
+        name "front_wheel_2"
+        boundingObject USE wheel
+        physics DEF wheel_physics Physics {
+        }
+      }
+    }
+    DEF back_wheel_1 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 41.03698692065761
+        axis 0 1 0
+        anchor -0.075 -0.078 0.025
+      }
+      device [
+        RotationalMotor {
+          name "back_motor_1"
+        }
+      ]
+      endPoint Solid {
+        translation -0.075 -0.078 0.025
+        rotation -0.06942434225492781 0.7056814966137569 -0.7051197671597633 3.2803289914744505
+        children [
+          DEF wheel Shape {
+            appearance PBRAppearance {
+              baseColor 1 0 0
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.025
+            }
+          }
+        ]
+        name "back_wheel_1"
+        boundingObject USE wheel
+        physics DEF wheel_physics Physics {
+        }
+      }
+    }
+    DEF back_wheel_2 HingeJoint {
+      jointParameters HingeJointParameters {
+        position 81.91593665765944
+        axis 0 1 0
+        anchor -0.075 0.078 0.025
+      }
+      device [
+        RotationalMotor {
+          name "back_motor_2"
+        }
+      ]
+      endPoint Solid {
+        translation -0.075 0.078 0.025
+        rotation -0.9863939017466559 -0.11629400882082853 0.11620143763908296 4.699486155811035
+        children [
+          DEF wheel Shape {
+            appearance PBRAppearance {
+              baseColor 1 0 0
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.01
+              radius 0.025
+            }
+          }
+        ]
+        name "back_wheel_2"
+        boundingObject USE wheel
+        physics DEF wheel_physics Physics {
+        }
+      }
+    }
+    Solid {
+      translation 0.125 0.025 0.045
+      children [
+        DEF eye_1 Shape {
+          appearance PBRAppearance {
+            baseColor 1 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.007 0.007 0.007
+          }
+        }
+      ]
+      name "eye_1"
+    }
+    Solid {
+      translation 0.125 -0.025 0.045
+      children [
+        DEF eye_2 Shape {
+          appearance PBRAppearance {
+            baseColor 1 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.007 0.007 0.007
+          }
+        }
+      ]
+      name "eye_2"
+    }
+    DistanceSensor {
+      translation 0 -0.078 0.045
+      rotation 0 0 1 -1.57
+      children [
+        DEF distance_sensor Shape {
+          appearance PBRAppearance {
+            baseColor 0 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "distance_sensor_side_right"
+      boundingObject USE distance_sensor
+      physics Physics {
+      }
+      lookupTable [
+        0 0 0
+        0.5 0.5 0
+      ]
+    }
+    DistanceSensor {
+      translation 0 0.078 0.045
+      rotation 0 0 1 1.57
+      children [
+        DEF distance_sensor Shape {
+          appearance PBRAppearance {
+            baseColor 0 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "distance_sensor_side_left"
+      boundingObject USE distance_sensor
+      physics Physics {
+      }
+      lookupTable [
+        0 0 0
+        0.5 0.5 0
+      ]
+    }
+    DistanceSensor {
+      translation 0.382 0.137 0.045
+      children [
+        DEF distance_sensor Shape {
+          appearance PBRAppearance {
+            baseColor 0 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "distance_sensor_leftFront"
+      boundingObject USE distance_sensor
+      physics Physics {
+      }
+      lookupTable [
+        0 0 0
+        0.5 0.5 0
+      ]
+    }
+    DistanceSensor {
+      translation 0.382 -0.137 0.045
+      children [
+        DEF distance_sensor Shape {
+          appearance PBRAppearance {
+            baseColor 0 1 0
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.01 0.01 0.01
+          }
+        }
+      ]
+      name "distance_sensor_rightFront"
+      boundingObject USE distance_sensor
+      physics Physics {
+      }
+      lookupTable [
+        0 0 0
+        0.5 0.5 0
+      ]
+    }
+  ]
+  boundingObject USE Body
+  physics Physics {
+  }
+  controller "robot_controller_2"
+}
