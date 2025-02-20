@@ -1,16 +1,15 @@
-#VRML_SIM R2023b utf8
+#VRML_SIM R2025a utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/BrushedAluminium.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
-  position 0.13000694576828134 6.945787922346018e-06 2.9595310069316216
+  orientation 0.5797505010835071 -0.5783029172651918 -0.573981787495031 4.181567859958386
+  position 0.026928036411727342 -0.028500337498418175 6.793273837916606
   follow "rectangle arena"
 }
 TexturedBackground {
@@ -19,8 +18,16 @@ TexturedBackgroundLight {
 }
 RectangleArena {
   floorSize 5 4
-  floorAppearance Parquetry {
-    type "light strip"
+  floorTileSize 5 4
+  floorAppearance PBRAppearance {
+    baseColor 0.6 0.756863 0.945098
+    baseColorMap ImageTexture {
+      url [
+        "textures/whitepaper.png"
+      ]
+    }
+    roughness 1
+    metalness 0
   }
   wallAppearance BrushedAluminium {
     colorOverride 0.239216 0.219608 0.27451
@@ -29,23 +36,28 @@ RectangleArena {
 Robot {
   children [
     Pen {
-      translation 0.13 0 0.02
-      rotation 1 0 0 1.57
+      translation 0.12 0 0.001
       children [
-        Shape {
-          appearance Appearance {
-            material Material {
+        Pose {
+          translation 0 0 0.07
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 1 0.692371 0
+                roughness 0.3707939685999999
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.14
+                radius 0.004
+              }
             }
-            texture ImageTexture {
-            }
-            textureTransform TextureTransform {
-            }
-          }
-          geometry Box {
-            size 0.01 0.05 0.01
-          }
+          ]
         }
       ]
+      inkColor 0 1 0
+      inkDensity 1
+      leadSize 0.02
     }
     Solid {
       translation 0.33 -0.104 0.045

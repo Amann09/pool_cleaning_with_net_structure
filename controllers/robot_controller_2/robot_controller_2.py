@@ -33,7 +33,6 @@ max_speed = 6.28
 
 safe_distance = 0.35 # in meters
 
-angles = [30, 45, 60, 90, 180]
 
 # Motors
 FRONT_SIDE_RIGHT_motor = robot.getMotor('front_motor_1')
@@ -70,6 +69,7 @@ side_left_distance_sensor.enable(timestep)
 # Inertial Unit
 imu = robot.getDevice('inertial unit')
 imu.enable(timestep)
+
 
 def sign():
     hit = None
@@ -193,6 +193,7 @@ def rotate(theta):
             if 0 <= abs(reading - endpointLEFT) <= 10:
                print("Turning Left complete")
                forward()
+               
 
 def stop():
 
@@ -271,6 +272,7 @@ def forward():
         
         back_right_motor.setVelocity(right_speed)
         back_left_motor.setVelocity(left_speed)
+        
 
 def forward_test():
     left_speed = max_speed
