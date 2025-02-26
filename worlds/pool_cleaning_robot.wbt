@@ -1,4 +1,4 @@
-#VRML_SIM R2023b utf8
+#VRML_SIM R2025a utf8
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
@@ -8,8 +8,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
+<<<<<<< HEAD
   orientation -0.5773502691896258 0.5773502691896258 0.5773502691896258 2.0944
   position -9.907630961209706e-06 -9.907658984755602e-06 6.684747530039494
+=======
+  orientation 0.5797505010835071 -0.5783029172651918 -0.573981787495031 4.181567859958386
+  position 0.026928036411727342 -0.028500337498418175 6.793273837916606
+>>>>>>> 8b31c7c4b11f0bdaf5dac914eb6d9e8bd2f0ec2b
   follow "rectangle arena"
 }
 TexturedBackground {
@@ -39,6 +44,7 @@ Robot {
       translation 0.12 0 0.001
       children [
         Pose {
+<<<<<<< HEAD
           translation 0 0 0.01
           children [
             Shape {
@@ -49,6 +55,19 @@ Robot {
               }
               geometry Box {
                 size 0.02 0.1 0.01
+=======
+          translation 0 0 0.07
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 1 0.692371 0
+                roughness 0.3707939685999999
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.14
+                radius 0.004
+>>>>>>> 8b31c7c4b11f0bdaf5dac914eb6d9e8bd2f0ec2b
               }
             }
           ]
@@ -56,7 +75,11 @@ Robot {
       ]
       inkColor 0 1 0
       inkDensity 1
+<<<<<<< HEAD
       leadSize 0.15
+=======
+      leadSize 0.02
+>>>>>>> 8b31c7c4b11f0bdaf5dac914eb6d9e8bd2f0ec2b
     }
     Solid {
       translation 0.33 -0.104 0.045
