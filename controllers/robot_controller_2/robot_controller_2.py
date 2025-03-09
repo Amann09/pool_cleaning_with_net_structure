@@ -226,23 +226,6 @@ def forward():
             angles = [15, 30, 45, 60, 75, 90, 180]
             random.shuffle(angles)
             for angle in angles:
-                # x = random.choice([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-                # if x%2 == 0:
-                    # rotate(angle)
-                # else:
-                    # rotate(-angle)
-                    
-                # if side_right_value < safe_distance-0.1:
-                #     print("Turning Left")
-                #     rotate(-angle)
-                # elif side_left_value < safe_distance-0.1:
-                #     print("Turning Right")
-                #     rotate(angle)
-                # else:
-                #     x = random.choice([-1, 1])
-                #     print("Turning {x}")
-                #     rotate(x * angle)
-
                 x = sign()
                 rotate(x*angle)
 
@@ -272,17 +255,6 @@ def forward():
         
         back_right_motor.setVelocity(right_speed)
         back_left_motor.setVelocity(left_speed)
-        
-
-def forward_test():
-    left_speed = max_speed
-    right_speed = max_speed
-    
-    FRONT_SIDE_RIGHT_motor.setVelocity(right_speed)
-    FRONT_SIDE_LEFT_motor.setVelocity(left_speed)
-        
-    back_right_motor.setVelocity(right_speed)
-    back_left_motor.setVelocity(left_speed)
     
 
 # Main loop:
