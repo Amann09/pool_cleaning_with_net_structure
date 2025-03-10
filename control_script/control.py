@@ -36,11 +36,19 @@ class Controller:
     
 
 
-    def get_distance(self) -> list:
-        if self.ser.in_waiting > 0:
-            line = self.ser.readline().decode('utf-8').strip()
-            distance_list = [float(i) for i in line.split(" ")]
-            return distance_list
+    def get_distance(self):
+        got_distance = False
+        while got_distance:
+            if self.ser.in_waiting > 0:
+                line = self.ser.readline().decode('utf-8').strip()
+                distance_list = [float(i) for i in line.split(" ")]
+            if distance_list:
+                if (0<=distance_list[0]<=400) and (0<=distance_list[1]<=400) (0<=distance_list[2]<=400) and (0<=distance_list[3]<=400):
+                    return distance_list
+                else:
+                    continue
+            else:
+                continue 
     
 
 
