@@ -243,6 +243,7 @@ def main():
 
     arduino_port = "/dev/ttyACM1"
     ser = serial.Serial(arduino_port, baud_rate, timeout=1)
+    time.sleep(2)
     print(f"Connected to Arduino Mega at {arduino_port}")
 
     print("All connections established!")
