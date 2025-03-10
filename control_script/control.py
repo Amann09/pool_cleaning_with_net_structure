@@ -62,7 +62,6 @@ class Controller:
                 self.master.target_component, # target_component
                 *self.rc_channel_values # RC channel list, in microseconds
             )
-
             if condition == False:
                 run_motor = False
         return
@@ -127,7 +126,6 @@ class Controller:
         elif self.get_distance()[3] < self.safe_distance + 30:
             hit = Hit.LEFT_SIDE
             print(f"hit: {hit}")
-
 
         if hit == Hit.FRONT_SIDE_RIGHT:
             return -1
@@ -207,8 +205,7 @@ class Controller:
                         (self.get_distance()[2] < self.safe_distance - 30),
                         (self.get_distance()[0] > self.safe_distance) or (self.get_distance()[1] > self.safe_distance) and (self.get_distance()[3] > self.safe_distance - 50) and (self.get_distance()[2] > self.safe_distance - 50)
                         ]
-            
-               
+                           
             if conditions[0] == True:
                 angles = self.angles
                 random.shuffle(angles)
@@ -238,13 +235,13 @@ class Controller:
 
 def main():
     baud_rate = 115200
-    pixhawk_port = ""
+    pixhawk_port = "/dev/ttyACM0"
     master = mavutil.mavlink_connection(pixhawk_port, baud=baud_rate)
     master.wait_heartbeat()
     print("Heartbeat recieved from the system!!")
     print(f"Connected to pixhawk at {pixhawk_port}")
 
-    arduino_port = ""
+    arduino_port = "/dev/ttyACM1"
     ser = serial.Serial(arduino_port, baud_rate, timeout=1)
     print(f"Connected to Arduino Mega at {arduino_port}")
 
