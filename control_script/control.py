@@ -163,18 +163,32 @@ class Controller:
             print(f"Rotating the vehicle in {turn} direction")
             print(f"Rotating: Sensor Values: (Right_Front, Left_Front, Right, Left) -> ({self.get_distance()[0]}, {self.get_distance()[1]}, {self.get_distance()[2]}, {self.get_distance()[3]})")
 
-            reading = (self.get_yaw() * (180/np.pi)) % 360
-            print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
-            print(f' [turning right {theta} degrees]')
+            # reading = (self.get_yaw() * (180/np.pi)) % 360
+            # print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
+            # print(f' [turning right {theta} degrees]')
 
             rotate_condition = 0 <= abs(reading - endpointRIGHT) <= 10
             channel = 1
             pwm = 1700
-            self.turn_rotate(channel, pwm, endpointRIGHT)
 
-            if rotate_condition:
+            # rotating = True
+            # while rotating == True:
+            #     reading = (self.get_yaw() * (180/np.pi)) % 360
+            #     print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
+            #     print(f' [turning right {theta} degrees]')
+            #     rotate_condition = 0 <= abs(reading - endpointRIGHT) <= 10
+            #     self.turn_rotate(channel, pwm, endpointRIGHT)
+            #     if rotate_condition == True:
+            #         rotating = False
+
+
+            if rotate_condition == True:
                 print("Turning right complete!")
                 self.initial()
+            elif rotate_condition == False:
+                print("Turning Right!!")
+                self.turn_rotate(channel, pwm, endpointRIGHT)
+
 
         if turn == Turn.ANTI_CLOCKWISE:
             START_THETA = (self.get_yaw() * (180/np.pi)) % 360
@@ -193,9 +207,12 @@ class Controller:
             pwm = 1200
             self.turn_rotate(channel, pwm, endpointLEFT)
 
-            if rotate_condition:
+            if rotate_condition == True:
                 print("Turning left complete!")
                 self.initial()
+            elif rotate_condition == False:
+                print("Turning Left!!")
+                self.turn_rotate(channel, pwm, endpointLEFT)
 
 
 
