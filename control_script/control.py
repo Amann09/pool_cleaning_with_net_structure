@@ -1,6 +1,6 @@
 from pymavlink import mavutil
 import numpy as np
-import math
+# import math
 import time
 import serial
 import random
@@ -77,7 +77,7 @@ class Controller:
                 self.master.target_component, # target_component
                 *self.rc_channel_values # RC channel list, in microseconds
             )
-            reading = (self.get_distance * (180/np.pi)) % 360
+            reading = (self.get_yaw(self) * (180/np.pi)) % 360
             if 0 <= abs(reading - endpoint) <= 10:
                 run_motor = False
         return
@@ -85,13 +85,16 @@ class Controller:
     
 
     def get_yaw(self):
+        imu_active = True
         msg = self.master.recv_match(type='ATTITUDE', blocking=True, timeout=2)
-        if msg:
-            yaw_deg = msg.yaw * 180 / np.pi  
-            return yaw_deg
-        else:
-            print("No attitude data received within timeout.")
-            return None
+        while imu_active == True:
+            if msg:
+                yaw_deg = msg.yaw * 180 / np.pi
+                imu_active = False  
+                return yaw_deg
+            else:
+                print("No attitude data received within timeout. Continuing!!!")
+                continue
 
 
     
@@ -169,8 +172,9 @@ class Controller:
             pwm = 1700
             self.turn_rotate(channel, pwm, endpointRIGHT)
 
-            print("Turning right complete!")
-            self.initial()
+            if rotate_condition:
+                print("Turning right complete!")
+                self.initial()
 
         if turn == Turn.ANTI_CLOCKWISE:
             START_THETA = (self.get_yaw() * (180/np.pi)) % 360
@@ -185,12 +189,13 @@ class Controller:
             print(f' [turning right {theta} degrees]')
 
             rotate_condition = 0 <= abs(reading - endpointLEFT) <= 10
-            channel = 3
+            channel = 1
             pwm = 1200
             self.turn_rotate(channel, pwm, endpointLEFT)
 
-            print("Turning left complete!")
-            self.initial()
+            if rotate_condition:
+                print("Turning left complete!")
+                self.initial()
 
 
 
@@ -215,7 +220,7 @@ class Controller:
             
             if conditions[1] == True:
                 print(f"Left wall detected at distance {self.get_distance()[3]}")
-                pwm = 1200
+                pwm = 1700
                 channel = 1
                 self.turn_initial(channel, pwm, conditions[1])
 
