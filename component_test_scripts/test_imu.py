@@ -11,6 +11,6 @@ print("Heartbeat received from system (system %u component %u)" % (master.target
 
 
 while True:
-    msg1 = master.recv_match(type='IMU_RAW', blocking=True)
+    msg1 = master.recv_match(type='RAW_IMU', blocking=True)
     print(msg1)
     
