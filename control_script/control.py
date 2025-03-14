@@ -31,7 +31,8 @@ class Controller:
 
         self.time_horizon = 3600 #in seconds
         self.safe_distance = 70 #in cm
-        self.angles = [15, 30, 45, 60, 75, 90, 180]
+        self.angles = [15, 30, 45, 60, 75, 90, 170]
+
         self.rc_channel_values = [65535 for _ in range(18)]
     
 
@@ -75,7 +76,7 @@ class Controller:
                 self.master.target_component, # target_component
                 *self.rc_channel_values # RC channel list, in microseconds
             )
-            reading = (self.get_yaw() * (180/np.pi)) % 360
+            reading = (self.get_yaw()) % 360
             if 0 <= abs(reading - endpoint) <= 10:
                 run_motor = False
         return
@@ -88,6 +89,8 @@ class Controller:
         while imu_active == True:
             if msg:
                 yaw_deg = msg.yaw * 180 / np.pi
+                if yaw_deg < 0:
+                    yaw_deg = yaw_deg + 360
                 imu_active = False  
                 return yaw_deg
             else:
@@ -164,7 +167,7 @@ class Controller:
             turn = Turn.ANTI_CLOCKWISE
 
         if turn == Turn.CLOCKWISE:
-            START_THETA = (self.get_yaw() * (180/np.pi)) % 360
+            START_THETA = (self.get_yaw()) % 360
             endpointRIGHT = (START_THETA + theta) % 360
             endpointLEFT = (START_THETA - theta) % 360
 
@@ -175,7 +178,7 @@ class Controller:
             # print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
             # print(f' [turning right {theta} degrees]')
 
-            reading = (self.get_yaw() * (180/np.pi)) % 360
+            reading = (self.get_yaw()) % 360
             print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
             print(f' [turning right {theta} degrees]')
 
@@ -215,14 +218,14 @@ class Controller:
 
 
         if turn == Turn.ANTI_CLOCKWISE:
-            START_THETA = (self.get_yaw() * (180/np.pi)) % 360
+            START_THETA = (self.get_yaw()) % 360
             endpointRIGHT = (START_THETA + theta) % 360
             endpointLEFT = (START_THETA - theta) % 360
 
             print(f"Rotating the vehicle in {turn} direction")
             print(f"Rotating: Sensor Values: (Right_Front, Left_Front, Right, Left) -> ({self.get_distance()[0]}, {self.get_distance()[1]}, {self.get_distance()[2]}, {self.get_distance()[3]})")
 
-            reading = (self.get_yaw() * (180/np.pi)) % 360
+            reading = (self.get_yaw()) % 360
             print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
             print(f' [turning left {theta} degrees]')
 
