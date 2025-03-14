@@ -103,47 +103,57 @@ class Controller:
         if (self.get_distance()[0] < self.safe_distance + 30) and (self.get_distance()[2] < self.safe_distance + 30):
             hit = Hit.FRONT_SIDE_RIGHT
             print(f"hit: {hit}")
+            return -1
 
         elif (self.get_distance()[1] < self.safe_distance + 30) and (self.get_distance()[3] < self.safe_distance + 30):
             hit = Hit.FRONT_SIDE_LEFT
             print(f"hit: {hit}")
+            return 1
         
         elif (self.get_distance()[0] < self.safe_distance + 30) and (self.get_distance()[1] < self.safe_distance + 30):
             hit = Hit.FRONT_BOTH
             print(f"hit: {hit}")
+            return 1
         
         elif self.get_distance()[0] < self.safe_distance + 30:
             hit = Hit.RIGHT_FRONT_ONLY
             print(f"hit: {hit}")
+            return -1
         
         elif self.get_distance()[1] < self.safe_distance + 30:
             hit = Hit.LEFT_FRONT_ONLY
             print(f"hit: {hit}")
+            return 1
         
         elif self.get_distance()[2] < self.safe_distance + 30:
             hit = Hit.RIGHT_SIDE
             print(f"hit: {hit}")
+            return -1
         
         elif self.get_distance()[3] < self.safe_distance + 30:
             hit = Hit.LEFT_SIDE
             print(f"hit: {hit}")
+            return 1
 
-        if hit == Hit.FRONT_SIDE_RIGHT:
-            return -1
-        elif hit == Hit.FRONT_SIDE_LEFT:
-            return +1
-        elif hit == Hit.FRONT_BOTH:
-            return +1
-        elif hit == Hit.RIGHT_FRONT_ONLY:
-            return -1
-        elif hit == Hit.LEFT_FRONT_ONLY:
-            return +1
-        elif hit == Hit.RIGHT_SIDE:
-            return -1
-        elif hit == Hit.LEFT_SIDE:
-            return +1
-        else:
-            return +1
+        else: 
+            return 1
+
+        # if hit == Hit.FRONT_SIDE_RIGHT:
+        #     return -1
+        # elif hit == Hit.FRONT_SIDE_LEFT:
+        #     return +1
+        # elif hit == Hit.FRONT_BOTH:
+        #     return +1
+        # elif hit == Hit.RIGHT_FRONT_ONLY:
+        #     return -1
+        # elif hit == Hit.LEFT_FRONT_ONLY:
+        #     return +1
+        # elif hit == Hit.RIGHT_SIDE:
+        #     return -1
+        # elif hit == Hit.LEFT_SIDE:
+        #     return +1
+        # else:
+        #     return +1
 
 
 
@@ -199,6 +209,7 @@ class Controller:
                         *self.rc_channel_values # RC channel list, in microseconds
                     )
                     reading = (self.get_yaw() * (180/np.pi)) % 360
+                    print("Reading: ", reading, " EndpointRight: ", endpointRIGHT)
                     if 0 <= abs(reading - endpointRIGHT) <= 10:
                         run_motor = False
 
@@ -235,6 +246,7 @@ class Controller:
                         *self.rc_channel_values # RC channel list, in microseconds
                     )
                     reading = (self.get_yaw() * (180/np.pi)) % 360
+                    print("Reading: ", reading, " EndpointLeft: ", endpointLEFT)
                     if 0 <= abs(reading - endpointLEFT) <= 10:
                         run_motor = False
 
