@@ -185,6 +185,17 @@ class Controller:
             rotate_condition = 0 <= abs(reading - endpointRIGHT) <= 10
             channel = 1
             pwm = 1700
+            
+            # rotate = True
+            # while rotate:
+            #     print("Turning right!!")
+            #     self.turn_rotate(channel, pwm, endpointRIGHT)
+            #     if rotate_condition == True:
+            #         print("Turning right done!!")
+            #         rotate = False
+            #         self.initial()
+            #     else:
+            #         continue
 
             # rotating = True
             # while rotating == True:
@@ -233,6 +244,17 @@ class Controller:
             channel = 1
             pwm = 1200
             # self.turn_rotate(channel, pwm, endpointLEFT)
+            
+            # rotate = True
+            # while rotate:
+            #     print("Turning left!!")
+            #     self.turn_rotate(channel, pwm, endpointLEFT)
+            #     if rotate_condition == True:
+            #         print("Turning left done!!")
+            #         rotate = False
+            #         self.initial()
+            #     else:
+            #         continue
 
             if rotate_condition == True:
                 print("Turning left complete!")
