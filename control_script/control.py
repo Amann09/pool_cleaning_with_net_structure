@@ -186,6 +186,8 @@ class Controller:
             channel = 1
             pwm = 1700
             
+            self.turn_rotate(channel, pwm, endpointRIGHT)
+
             # rotate = True
             # while rotate:
             #     print("Turning right!!")
@@ -208,12 +210,13 @@ class Controller:
             #         rotating = False
 
 
-            if rotate_condition == True:
-                print("Turning right complete!")
-                self.initial()
-            elif rotate_condition == False:
-                print("Turning Right!!")
-                self.turn_rotate(channel, pwm, endpointRIGHT)
+            # if rotate_condition == True:
+            #     print("Turning right complete!")
+            #     self.initial()
+            # elif rotate_condition == False:
+            #     print("Turning Right!!")
+            #     self.turn_rotate(channel, pwm, endpointRIGHT)
+
                 # run_motor = True
                 # while run_motor:
                 #     self.rc_channel_values[channel-1] = pwm
@@ -243,7 +246,8 @@ class Controller:
             rotate_condition = 0 <= abs(reading - endpointLEFT) <= 10
             channel = 1
             pwm = 1200
-            # self.turn_rotate(channel, pwm, endpointLEFT)
+
+            self.turn_rotate(channel, pwm, endpointLEFT)
             
             # rotate = True
             # while rotate:
@@ -256,12 +260,13 @@ class Controller:
             #     else:
             #         continue
 
-            if rotate_condition == True:
-                print("Turning left complete!")
-                self.initial()
-            elif rotate_condition == False:
-                print("Turning Left!!")
-                self.turn_rotate(channel, pwm, endpointLEFT)
+            # if rotate_condition == True:
+            #     print("Turning left complete!")
+            #     self.initial()
+            # elif rotate_condition == False:
+            #     print("Turning Left!!")
+            #     self.turn_rotate(channel, pwm, endpointLEFT)
+
                 # run_motor = True
                 # while run_motor:
                 #     self.rc_channel_values[channel-1] = pwm
