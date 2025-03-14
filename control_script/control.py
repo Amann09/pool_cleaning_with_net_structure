@@ -42,45 +42,43 @@ class Controller:
             if self.ser.in_waiting > 0:
                 line = self.ser.readline().decode('utf-8').strip()
                 distance_list = [float(i) for i in line.split(" ")]
-            if distance_list:
-                if (0<=distance_list[0]<=400) and (0<=distance_list[1]<=400) (0<=distance_list[2]<=400) and (0<=distance_list[3]<=400):
+                
+                if (0<=distance_list[0]<=400) and (0<=distance_list[1]<=400) and (0<=distance_list[2]<=400) and (0<=distance_list[3]<=400):
                     got_distance = True
                     return distance_list
                 else:
                     continue
-            else:
-                continue 
     
 
 
-    def turn_initial(self, channel, pwm, condition):
-        run_motor = True
-        while run_motor == True:
-            self.rc_channel_values[channel-1] = pwm
-            self.master.mav.rc_channels_override_send(
-                self.master.target_system, #target_system
-                self.master.target_component, # target_component
-                *self.rc_channel_values # RC channel list, in microseconds
-            )
-            if condition == False:
-                run_motor = False
-        return
+    # def turn_initial(self, channel, pwm, condition):
+    #     run_motor = True
+    #     while run_motor == True:
+    #         self.rc_channel_values[channel-1] = pwm
+    #         self.master.mav.rc_channels_override_send(
+    #             self.master.target_system, #target_system
+    #             self.master.target_component, # target_component
+    #             *self.rc_channel_values # RC channel list, in microseconds
+    #         )
+    #         if condition == False:
+    #             run_motor = False
+    #     return
 
 
 
-    def turn_rotate(self, channel, pwm, endpoint):
-        run_motor = True
-        while run_motor:
-            self.rc_channel_values[channel-1] = pwm
-            self.master.mav.rc_channels_override_send(
-                self.master.target_system, #target_system
-                self.master.target_component, # target_component
-                *self.rc_channel_values # RC channel list, in microseconds
-            )
-            reading = (self.get_yaw(self) * (180/np.pi)) % 360
-            if 0 <= abs(reading - endpoint) <= 10:
-                run_motor = False
-        return
+    # def turn_rotate(self, channel, pwm, endpoint):
+    #     run_motor = True
+    #     while run_motor:
+    #         self.rc_channel_values[channel-1] = pwm
+    #         self.master.mav.rc_channels_override_send(
+    #             self.master.target_system, #target_system
+    #             self.master.target_component, # target_component
+    #             *self.rc_channel_values # RC channel list, in microseconds
+    #         )
+    #         reading = (self.get_yaw(self) * (180/np.pi)) % 360
+    #         if 0 <= abs(reading - endpoint) <= 10:
+    #             run_motor = False
+    #     return
 
     
 
@@ -102,15 +100,15 @@ class Controller:
         hit = None
         print(f"Sensor values: Front right - {self.get_distance()[0]}, Front left - {self.get_distance()[1]}, Right - {self.get_distance()[2]}, Left - {self.get_distance()[3]}")
 
-        if (self.get_distance()[0] < self.safe_distance + 30) and (self.get_distance[2] < self.safe_distance + 30):
+        if (self.get_distance()[0] < self.safe_distance + 30) and (self.get_distance()[2] < self.safe_distance + 30):
             hit = Hit.FRONT_SIDE_RIGHT
             print(f"hit: {hit}")
 
-        elif (self.get_distance()[1] < self.safe_distance + 30) and (self.get_distance[3] < self.safe_distance + 30):
+        elif (self.get_distance()[1] < self.safe_distance + 30) and (self.get_distance()[3] < self.safe_distance + 30):
             hit = Hit.FRONT_SIDE_LEFT
             print(f"hit: {hit}")
         
-        elif (self.get_distance()[0] < self.safe_distance + 30) and (self.get_distance[1] < self.safe_distance + 30):
+        elif (self.get_distance()[0] < self.safe_distance + 30) and (self.get_distance()[1] < self.safe_distance + 30):
             hit = Hit.FRONT_BOTH
             print(f"hit: {hit}")
         
@@ -167,6 +165,10 @@ class Controller:
             # print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
             # print(f' [turning right {theta} degrees]')
 
+            reading = (self.get_yaw() * (180/np.pi)) % 360
+            print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
+            print(f' [turning right {theta} degrees]')
+
             rotate_condition = 0 <= abs(reading - endpointRIGHT) <= 10
             channel = 1
             pwm = 1700
@@ -187,7 +189,18 @@ class Controller:
                 self.initial()
             elif rotate_condition == False:
                 print("Turning Right!!")
-                self.turn_rotate(channel, pwm, endpointRIGHT)
+                # self.turn_rotate(channel, pwm, endpointRIGHT)
+                run_motor = True
+                while run_motor:
+                    self.rc_channel_values[channel-1] = pwm
+                    self.master.mav.rc_channels_override_send(
+                        self.master.target_system, #target_system
+                        self.master.target_component, # target_component
+                        *self.rc_channel_values # RC channel list, in microseconds
+                    )
+                    reading = (self.get_yaw() * (180/np.pi)) % 360
+                    if 0 <= abs(reading - endpointRIGHT) <= 10:
+                        run_motor = False
 
 
         if turn == Turn.ANTI_CLOCKWISE:
@@ -200,7 +213,7 @@ class Controller:
 
             reading = (self.get_yaw() * (180/np.pi)) % 360
             print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
-            print(f' [turning right {theta} degrees]')
+            print(f' [turning left {theta} degrees]')
 
             rotate_condition = 0 <= abs(reading - endpointLEFT) <= 10
             channel = 1
@@ -212,14 +225,25 @@ class Controller:
                 self.initial()
             elif rotate_condition == False:
                 print("Turning Left!!")
-                self.turn_rotate(channel, pwm, endpointLEFT)
+                # self.turn_rotate(channel, pwm, endpointLEFT)
+                run_motor = True
+                while run_motor:
+                    self.rc_channel_values[channel-1] = pwm
+                    self.master.mav.rc_channels_override_send(
+                        self.master.target_system, #target_system
+                        self.master.target_component, # target_component
+                        *self.rc_channel_values # RC channel list, in microseconds
+                    )
+                    reading = (self.get_yaw() * (180/np.pi)) % 360
+                    if 0 <= abs(reading - endpointLEFT) <= 10:
+                        run_motor = False
 
 
 
     def initial(self):
         start_time = time.time()
         while (time.time() - start_time) < self.time_horizon:
-            print(f"Going Straight: Sensor values: Front right - {self.get_distance()[0]}, Front left - {self.get_distance()[1]}, Right - {self.get_distance()[2]}, Left - {self.get_distance()[3]}")
+            print(f"Sensor values: Front right - {self.get_distance()[0]}, Front left - {self.get_distance()[1]}, Right - {self.get_distance()[2]}, Left - {self.get_distance()[3]}")
             
             conditions = [
                         (self.get_distance()[0] < self.safe_distance) or (self.get_distance()[1] < self.safe_distance),
@@ -239,19 +263,49 @@ class Controller:
                 print(f"Left wall detected at distance {self.get_distance()[3]}")
                 pwm = 1700
                 channel = 1
-                self.turn_initial(channel, pwm, conditions[1])
+                # self.turn_initial(channel, pwm, conditions[1])
+                run_motor = True
+                while run_motor == True:
+                    self.rc_channel_values[channel-1] = pwm
+                    self.master.mav.rc_channels_override_send(
+                        self.master.target_system, #target_system
+                        self.master.target_component, # target_component
+                        *self.rc_channel_values # RC channel list, in microseconds
+                    )
+                    if conditions[1] == False:
+                        run_motor = False
 
             elif conditions[2] == True:
                 print(f"Right wall detected at distance {self.get_distance()[2]}")
                 pwm = 1200
                 channel = 1
-                self.turn_initial(channel, pwm, conditions[2])
+                # self.turn_initial(channel, pwm, conditions[2])
+                run_motor = True
+                while run_motor == True:
+                    self.rc_channel_values[channel-1] = pwm
+                    self.master.mav.rc_channels_override_send(
+                        self.master.target_system, #target_system
+                        self.master.target_component, # target_component
+                        *self.rc_channel_values # RC channel list, in microseconds
+                    )
+                    if conditions[2] == False:
+                        run_motor = False
 
             elif conditions[3] == True:
                 print("Going straight")
                 pwm = 1600
                 channel = 3
-                self.turn_initial(channel, pwm, conditions[3])
+                # self.turn_initial(channel, pwm, conditions[3])
+                run_motor = True
+                while run_motor == True:
+                    self.rc_channel_values[channel-1] = pwm
+                    self.master.mav.rc_channels_override_send(
+                        self.master.target_system, #target_system
+                        self.master.target_component, # target_component
+                        *self.rc_channel_values # RC channel list, in microseconds
+                    )
+                    if conditions[3] == False:
+                        run_motor = False
 
 
 
