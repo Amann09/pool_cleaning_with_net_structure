@@ -34,7 +34,7 @@ class OutsideControl:
             )
         if self.geofence_detected() == True:
             run_motor = False
-            
+
         return
 
     
@@ -155,7 +155,34 @@ class OutsideControl:
                 elif (time.time() - start_time) > 10:
 
                     self.log_GPS(log_file_name='gps_data.csv')
-                    self.calculate_geofence(half_diagonal_km=0.05, aspect_ratio=1/2)
+                    corners = self.calculate_geofence(half_diagonal_km=0.05, aspect_ratio=1/2)
+                    vertices = [
+                                corners['top_left'],
+                                corners['top_right'],
+                                corners['bottom_right'],
+                                corners['bottom_left']
+                                ]
+                    # Send vertices to autopilot
+                    for idx, (lat, lon) in enumerate(vertices):
+                        self.master.mav.command_long_send(
+                            target_system=self.master.target_system,
+                            target_component=self.master.target_component,
+                            command=mavutil.mavlink.MAV_CMD_NAV_FENCE_POLYGON_VERTEX_INCLUSION,
+                            confirmation=0,
+                            param1=idx+1,  # Vertex index (1-based)
+                            param2=lat,
+                            param3=lon,
+                            param4=0,      # Altitude (not used)
+                        )
+
+                    # Finalize geofence (4 vertices)
+                    self.master.mav.command_long_send(
+                        target_system=self.master.target_system,
+                        target_component=self.master.target_component,
+                        command=mavutil.mavlink.MAV_CMD_NAV_FENCE_POLYGON_VERTEX_EXCLUSION,
+                        confirmation=0,
+                        param1=4,  # Total vertices
+                    )
 
                     if self.geofence_detected() == True:
                         angles = self.angles
