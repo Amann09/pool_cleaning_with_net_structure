@@ -34,7 +34,21 @@ class OutsideControl:
             )
         if self.geofence_detected() == True:
             run_motor = False
+        return
 
+
+    def turn_rotate(self, channel, pwm, endpoint):
+        run_motor = True
+        while run_motor:
+            self.rc_channel_values[channel-1] = pwm
+            self.master.mav.rc_channels_override_send(
+                self.master.target_system, #target_system
+                self.master.target_component, # target_component
+                *self.rc_channel_values # RC channel list, in microseconds
+            )
+            reading = (self.get_yaw()) % 360
+            if 0 <= abs(reading - endpoint) <= 10:
+                run_motor = False
         return
 
     
@@ -107,8 +121,91 @@ class OutsideControl:
         }
 
 
-    def geofence_detected(self):
-        pass
+    def get_relative_pos(self, lat1, lon1, lat2, lon2):
+        dLon = math.radians(lon2/1e7 - lon1/1e7)
+        lat1 = math.radians(lat1/1e7)
+        lat2 = math.radians(lat2/1e7)
+        
+        y = math.sin(dLon) * math.cos(lat2)
+        x = math.cos(lat1)*math.sin(lat2) - math.sin(lat1)*math.cos(lat2)*math.cos(dLon)
+        return math.degrees(math.atan2(y, x)) % 360
+
+
+    def calculate_bearing(self, geofence_bearing, vehicle_heading):
+        """Determine front/front-right/front-left position"""
+        diff = (geofence_bearing - vehicle_heading) % 360
+
+        if diff <= 45 or diff >= 315:
+            return "Front"
+        elif 22.5 < diff <= 90:
+            return "Front-Right"
+        elif 270 < diff < 337.5:
+            return "Front-Left"
+        elif 45 < diff < 135:
+            return "Right"
+        elif 225 < diff < 315:
+            return "Left"
+        else:
+            return "Other"
+
+
+    def geofence_detected(self, vertices):
+
+        def distance_to_line_segment(p1, p2, p):
+            """Calculate distance from point p to line segment p1-p2"""
+            x0, y0 = p[0]/1e7, p[1]/1e7
+            x1, y1 = p1[0]/1e7, p1[1]/1e7
+            x2, y2 = p2[0]/1e7, p2[1]/1e7
+
+            lat_dist = 111319  # meters per degree latitude (or 111111 meter)
+            lon_dist = lat_dist * math.cos(math.radians(y0))
+
+            dx = (x2 - x1) * lon_dist
+            dy = (y2 - y1) * lat_dist
+            l2 = dx**2 + dy**2
+
+            if l2 == 0:
+                return math.hypot((x0 - x1) * lon_dist, (y0 - y1) * lat_dist)
+
+            t = max(0, min(1, ((x0 - x1) * dx + (y0 - y1) * dy) / l2))
+            nearest_x = x1 + t * dx / lon_dist
+            nearest_y = y1 + t * dy / lat_dist
+
+            return math.hypot((x0 - nearest_x) * lon_dist, (y0 - nearest_y) * lat_dist)
+
+
+        pos = self.master.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
+
+        if pos:
+            current_lat = pos.lat
+            current_lon = pos.lon
+            heading = self.get_yaw() % 360
+
+            # Calculate distance to each edge
+            distances = []
+            for i in range(len(vertices)):
+                p1 = vertices[i]
+                p2 = vertices[(i+1) % len(vertices)]
+                distances.append(distance_to_line_segment(p1, p2, (current_lat, current_lon)))
+
+            min_distance = min(distances)
+
+            if min_distance <= self.distance_thr:
+                closest_edge_idx = distances.index(min_distance)
+                p1 = vertices[closest_edge_idx]
+                p2 = vertices[(closest_edge_idx+1) % len(vertices)]
+
+                # Calculate bearing to closest point on edge
+                midpoint_lat = (p1[0] + p2[0]) / 2
+                midpoint_lon = (p1[1] + p2[1]) / 2
+                fence_bearing = self.calculate_bearing(current_lat, current_lon, midpoint_lat, midpoint_lon)
+
+                direction = self.get_relative_pos(heading, fence_bearing)
+                if direction != "Other":
+                    print(f"Geofence approaching from {direction} ({min_distance:.1f}m)")
+                    return direction, min_distance
+
+
 
     def get_yaw(self):
         imu_active = True
@@ -123,6 +220,145 @@ class OutsideControl:
             else:
                 print("No attitude data received within timeout. Continuing!!!")
                 continue
+
+    
+    def sign(self, direction):
+        if direction == 'Front-Right':
+            return -1
+
+        elif direction == 'Front-Left':
+            return 1
+        
+        elif direction == 'Front':
+            return 1
+        
+        elif direction == 'Right':
+            return -1
+        
+        elif direction == 'Left':
+            return 1
+        
+        else: 
+            return 1
+        
+    
+    def rotate(self, theta):
+        turn = None
+        if theta > 0:
+            turn = "anti-clock"
+        else:
+            turn = "clock"
+        
+        if turn == 'clock':
+            START_THETA = (self.get_yaw()) % 360
+            endpointRIGHT = (START_THETA + theta) % 360
+            endpointLEFT = (START_THETA - theta) % 360
+
+            print(f"Rotating the vehicle in {turn} direction")
+
+            # reading = (self.get_yaw() * (180/np.pi)) % 360
+            # print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
+            # print(f' [turning right {theta} degrees]')
+
+            reading = (self.get_yaw()) % 360
+            print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
+            print(f' [turning right {theta} degrees]')
+
+            rotate_condition = 0 <= abs(reading - endpointRIGHT) <= 10
+            channel = 1
+            pwm = 1700
+            
+            self.turn_rotate(channel, pwm, endpointRIGHT)
+
+            # rotate = True
+            # while rotate:
+            #     print("Turning right!!")
+            #     self.turn_rotate(channel, pwm, endpointRIGHT)
+            #     if rotate_condition == True:
+            #         print("Turning right done!!")
+            #         rotate = False
+            #         self.initial()
+            #     else:
+            #         continue
+
+            # rotating = True
+            # while rotating == True:
+            #     reading = (self.get_yaw() * (180/np.pi)) % 360
+            #     print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
+            #     print(f' [turning right {theta} degrees]')
+            #     rotate_condition = 0 <= abs(reading - endpointRIGHT) <= 10
+            #     self.turn_rotate(channel, pwm, endpointRIGHT)
+            #     if rotate_condition == True:
+            #         rotating = False
+
+
+            # if rotate_condition == True:
+            #     print("Turning right complete!")
+            #     self.initial()
+            # elif rotate_condition == False:
+            #     print("Turning Right!!")
+            #     self.turn_rotate(channel, pwm, endpointRIGHT)
+
+                # run_motor = True
+                # while run_motor:
+                #     self.rc_channel_values[channel-1] = pwm
+                #     self.master.mav.rc_channels_override_send(
+                #         self.master.target_system, #target_system
+                #         self.master.target_component, # target_component
+                #         *self.rc_channel_values # RC channel list, in microseconds
+                #     )
+                #     reading = (self.get_yaw() * (180/np.pi)) % 360
+                #     print("Reading: ", reading, " EndpointRight: ", endpointRIGHT)
+                #     if 0 <= abs(reading - endpointRIGHT) <= 10:
+                #         run_motor = False
+        if turn == 'anti-clock':
+            START_THETA = (self.get_yaw()) % 360
+            endpointRIGHT = (START_THETA + theta) % 360
+            endpointLEFT = (START_THETA - theta) % 360
+
+            print(f"Rotating the vehicle in {turn} direction")
+
+            reading = (self.get_yaw()) % 360
+            print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
+            print(f' [turning left {theta} degrees]')
+
+            rotate_condition = 0 <= abs(reading - endpointLEFT) <= 10
+            channel = 1
+            pwm = 1200
+
+            self.turn_rotate(channel, pwm, endpointLEFT)
+            
+            # rotate = True
+            # while rotate:
+            #     print("Turning left!!")
+            #     self.turn_rotate(channel, pwm, endpointLEFT)
+            #     if rotate_condition == True:
+            #         print("Turning left done!!")
+            #         rotate = False
+            #         self.initial()
+            #     else:
+            #         continue
+
+            # if rotate_condition == True:
+            #     print("Turning left complete!")
+            #     self.initial()
+            # elif rotate_condition == False:
+            #     print("Turning Left!!")
+            #     self.turn_rotate(channel, pwm, endpointLEFT)
+
+                # run_motor = True
+                # while run_motor:
+                #     self.rc_channel_values[channel-1] = pwm
+                #     self.master.mav.rc_channels_override_send(
+                #         self.master.target_system, #target_system
+                #         self.master.target_component, # target_component
+                #         *self.rc_channel_values # RC channel list, in microseconds
+                #     )
+                #     reading = (self.get_yaw() * (180/np.pi)) % 360
+                #     print("Reading: ", reading, " EndpointLeft: ", endpointLEFT)
+                #     if 0 <= abs(reading - endpointLEFT) <= 10:
+                #         run_motor = False
+
 
     
     def start(self):
@@ -184,18 +420,17 @@ class OutsideControl:
                         param1=4,  # Total vertices
                     )
 
-                    if self.geofence_detected() == True:
+                    direction, min_distance = self.geofence_detected(vertices)
+                    if min_distance <= self.distance_thr:
                         angles = self.angles
                         random.shuffle(angles)
-                        imu_reading = (self.get_yaw()) % 360
+                        for angle in angles:
+                            sign = self.sign(direction)
+                            self.rotate(sign*angle)
+                        
 
                     else:
                         self.go_forward()
-
-
-
-
-
 
                 
 
