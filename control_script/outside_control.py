@@ -119,6 +119,7 @@ class OutsideControl:
             'bottom_left': (center_lat - lat_offset, center_lon - lon_offset),
             'bottom_right': (center_lat - lat_offset, center_lon + lon_offset)
         }
+    
 
 
     def get_relative_pos(self, lat1, lon1, lat2, lon2):
@@ -172,7 +173,6 @@ class OutsideControl:
             nearest_y = y1 + t * dy / lat_dist
 
             return math.hypot((x0 - nearest_x) * lon_dist, (y0 - nearest_y) * lat_dist)
-
 
         pos = self.master.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
 
@@ -256,10 +256,6 @@ class OutsideControl:
 
             print(f"Rotating the vehicle in {turn} direction")
 
-            # reading = (self.get_yaw() * (180/np.pi)) % 360
-            # print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
-            # print(f' [turning right {theta} degrees]')
-
             reading = (self.get_yaw()) % 360
             print(f"(START_THETA, Reading, endPointRight, endPointLeft) -> ({START_THETA}, {reading}, {endpointRIGHT}, {endpointLEFT})")
             print(f' [turning right {theta} degrees]')
@@ -269,6 +265,7 @@ class OutsideControl:
             pwm = 1700
             
             self.turn_rotate(channel, pwm, endpointRIGHT)
+            self.start()
 
             # rotate = True
             # while rotate:
@@ -327,6 +324,7 @@ class OutsideControl:
             pwm = 1200
 
             self.turn_rotate(channel, pwm, endpointLEFT)
+            self.start()
             
             # rotate = True
             # while rotate:
@@ -365,6 +363,8 @@ class OutsideControl:
         log_data = True
         start_time = time.time()
 
+        #TODO: go to location or move for 10 seconds?
+
         while log_data == True:
             while (time.time() - start_time) <= self.time_horizon:
                 if (time.time() - start_time) <= 10:
@@ -391,6 +391,7 @@ class OutsideControl:
                 elif (time.time() - start_time) > 10:
 
                     self.log_GPS(log_file_name='gps_data.csv')
+
                     corners = self.calculate_geofence(half_diagonal_km=0.05, aspect_ratio=1/2)
                     vertices = [
                                 corners['top_left'],

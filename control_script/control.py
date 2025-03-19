@@ -187,6 +187,7 @@ class Controller:
             pwm = 1700
             
             self.turn_rotate(channel, pwm, endpointRIGHT)
+            self.initial()
 
             # rotate = True
             # while rotate:
@@ -248,6 +249,7 @@ class Controller:
             pwm = 1200
 
             self.turn_rotate(channel, pwm, endpointLEFT)
+            self.initial()
             
             # rotate = True
             # while rotate:
