@@ -44,7 +44,8 @@ class Controller:
                 line = self.ser.readline().decode('utf-8').strip()
                 distance_list = [float(i) for i in line.split(" ")]
                 
-                if (0<=distance_list[0]<=400) and (0<=distance_list[1]<=400) and (0<=distance_list[2]<=400) and (0<=distance_list[3]<=400):
+                # if (0<=distance_list[0]<=400) and (0<=distance_list[1]<=400) and (0<=distance_list[2]<=400) and (0<=distance_list[3]<=400):
+                if distance_list:
                     got_distance = True
                     return distance_list
                 else:
