@@ -2,10 +2,10 @@
 
 ## EcoBoat
 CAD Render of EcoBoat
-https://github.com/Amann09/pool_cleaning_with_net_structure/blob/main/images/CAD_render_of_EcoBoat.png
+![cad_render_of_ecoboat](https://github.com/Amann09/pool_cleaning_with_net_structure/blob/main/images/CAD_render_of_EcoBoat.png)
 
 EcoBoat in Action
-https://github.com/Amann09/pool_cleaning_with_net_structure/blob/main/images/EcoBoat_in_pool.jpg
+![ecoboat_in_action](https://github.com/Amann09/pool_cleaning_with_net_structure/blob/main/images/EcoBoat_in_pool.jpg)
 
 
 ## Webots Simulation 
