@@ -1,7 +1,14 @@
 # Pool Cleaning Robot 
 
 ## EcoBoat
+CAD Render of EcoBoat
+https://github.com/Amann09/pool_cleaning_with_net_structure/blob/main/images/CAD_render_of_EcoBoat.png
 
+EcoBoat in Action
+https://github.com/Amann09/pool_cleaning_with_net_structure/blob/main/images/EcoBoat_in_pool.jpg
+
+
+## Webots Simulation 
 Starting Position
 ![pool_cleaning_robot_1](https://github.com/user-attachments/assets/2f5a7165-396d-4ee9-82bb-3fdcb72311e7)
 
