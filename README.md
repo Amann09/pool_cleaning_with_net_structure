@@ -9,12 +9,6 @@ EcoBoat in Action
 
 
 ## Webots Simulation 
-
-<center>
-    <iframe width="600" height="315" src="https://www.youtube.com/embed/NnsBjuA5rr8"></iframe> 
-</center>
-
-
 Starting Position
 ![pool_cleaning_robot_1](https://github.com/user-attachments/assets/2f5a7165-396d-4ee9-82bb-3fdcb72311e7)
 
@@ -23,4 +17,5 @@ Random Coverage by the bot
 
 ![pool_cleaning_robot](https://github.com/user-attachments/assets/8e3eb250-e401-4801-9747-29005b3335e6)
 
-## Webots Simulation
+
+Check out simulation video on ![youtube ↗](https://www.youtube.com/embed/NnsBjuA5rr8)
