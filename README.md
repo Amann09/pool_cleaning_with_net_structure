@@ -21,4 +21,4 @@ Random Coverage by the bot
 
 Check out simulation video below:
 
-![Youtube](recordings\v3_pool_cleaning_robot_with_distance_sensors.mp4)
+![Video](/recordings/v3_pool_cleaning_robot_with_distance_sensors.mp4)
