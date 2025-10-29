@@ -10,6 +10,7 @@ EcoBoat in Action
 
 ## Webots Simulation 
 Starting Position
+
 ![pool_cleaning_robot_1](https://github.com/user-attachments/assets/2f5a7165-396d-4ee9-82bb-3fdcb72311e7)
 
 
@@ -18,4 +19,6 @@ Random Coverage by the bot
 ![pool_cleaning_robot](https://github.com/user-attachments/assets/8e3eb250-e401-4801-9747-29005b3335e6)
 
 
-Check out simulation video on [![Youtube](/images/youtube.png)](https://youtu.be/NnsBjuA5rr8?si=BQ6TV-yHIYOM2TES).
+Check out simulation video below:
+
+![Youtube](recordings\v3_pool_cleaning_robot_with_distance_sensors.mp4)
