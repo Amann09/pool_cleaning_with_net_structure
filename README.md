@@ -18,4 +18,4 @@ Random Coverage by the bot
 ![pool_cleaning_robot](https://github.com/user-attachments/assets/8e3eb250-e401-4801-9747-29005b3335e6)
 
 
-Check out simulation video on ![youtube](https://youtu.be/NnsBjuA5rr8?si=_RTd65zpYRkQndVp).
+Check out simulation video on ![youtube](https://www.youtube.com/watch?v=NnsBjuA5rr8).
